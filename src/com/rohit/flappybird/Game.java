@@ -17,6 +17,9 @@ import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.PixelFormat;
 
+import com.rohit.flappybird.util.FileUtility;
+import com.rohit.flappybird.util.ShaderUtils;
+
 /**
  * @author rajbar
  *
@@ -56,6 +59,8 @@ public class Game implements Runnable {
 		} catch (LWJGLException e) {
 			e.printStackTrace();
 		}
+		
+//		int shader = ShaderUtils.load("shaders/shader.vert","shaders/shader.frag");
 		
 		init();
 
