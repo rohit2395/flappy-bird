@@ -28,8 +28,8 @@ public class Matrix4f {
 		result.getMatrix()[2 + 2 * MAT_ROW_COL] = 2.0f / (near - far);
 
 		result.getMatrix()[0 + 3 * MAT_ROW_COL] = (left + right) / (left - right);
-		result.getMatrix()[1 + 3 * MAT_ROW_COL] = (top + bottom) / (bottom - top);
-		result.getMatrix()[2 + 3 * MAT_ROW_COL] = (near + far) / (near - far);
+		result.getMatrix()[1 + 3 * MAT_ROW_COL] = (bottom + top) / (bottom - top);
+		result.getMatrix()[2 + 3 * MAT_ROW_COL] = (far + near) / (far - near);
 
 		return result;
 	}

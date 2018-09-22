@@ -6,6 +6,7 @@ package com.rohit.flappybird;
 import static com.rohit.flappybird.util.RGBToOpenGLColorCode.*;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL13.*;
 
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
@@ -27,7 +28,6 @@ public class Game implements Runnable {
 	private long window;
 	
 	private Level level;
-
 	@Override
 	public void run() {
 		System.out.println("Game started...");
@@ -61,20 +61,21 @@ public class Game implements Runnable {
 
 		GL.createCapabilities();
 
-		glClearColor(getOpenGLValue(34), getOpenGLValue(158), getOpenGLValue(67), 1.0f);
+		glClearColor(getOpenGLValue(92), getOpenGLValue(177), getOpenGLValue(243), 0.1f);
 		glEnable(GL_DEPTH_TEST);
+		glActiveTexture(GL_TEXTURE1);
 		System.out.println("OpenGL Version :" + glGetString(GL_VERSION));
 		Shader.loadAll();
 
-		Shader.BG.enable();
-		Matrix4f pr_matrix = Matrix4f.orthographic(-10.0f, 10.0f, -10.0f * 9.0f / 16.0f, 10.0f * 9.0f / 16.0f, -1.0f, 1.0f);
+		Matrix4f pr_matrix = Matrix4f.orthographic(-10.0f,  10.0f, -10.0f ,  10.0f  ,-1.0f, 1.0f);
 		Shader.BG.setUniformMat4f("pr_matrix", pr_matrix);
-		Shader.BG.disable();
+		Shader.BG.setUniform1i("tex",1);
+		
 		level = new Level();
 		
-		int i = glGetError();
-		if(i  != GL_NO_ERROR) {
-			System.out.println(i);
+		int error = glGetError();
+		if(error  != GL_NO_ERROR) {
+			System.out.println(error);
 		}
 	}
 

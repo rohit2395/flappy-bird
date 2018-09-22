@@ -14,19 +14,21 @@ public class VertexArray {
 
 	public VertexArray(float[] vertices, byte[] indices, float[] textureCoordiantes) {
 		count = indices.length;
+		
 		vao = glGenVertexArrays();
 		glBindVertexArray(vao);
 
 		vbo = glGenBuffers();
 		glBindBuffer(GL_ARRAY_BUFFER, vbo);
 		glBufferData(GL_ARRAY_BUFFER, BufferUtils.createFloatBuffer(vertices), GL_STATIC_DRAW);
+		System.out.println(BufferUtils.createFloatBuffer(vertices).capacity());
 		glVertexAttribPointer(Shader.VERTEX_ATTRIB, 3, GL_FLOAT, false, 0, 0);
 		glEnableVertexAttribArray(Shader.VERTEX_ATTRIB);
 
 		tbo = glGenBuffers();
 		glBindBuffer(GL_ARRAY_BUFFER, tbo);
-		glBufferData(GL_ARRAY_BUFFER, BufferUtils.createFloatBuffer(vertices), GL_STATIC_DRAW);
-		glVertexAttribPointer(Shader.TCOORD_ATTRIB, 3, GL_FLOAT, false, 0, 0);
+		glBufferData(GL_ARRAY_BUFFER, BufferUtils.createFloatBuffer(textureCoordiantes), GL_STATIC_DRAW);
+		glVertexAttribPointer(Shader.TCOORD_ATTRIB, 2, GL_FLOAT, false, 0, 0);
 		glEnableVertexAttribArray(Shader.TCOORD_ATTRIB);
 
 		ibo = glGenBuffers();
