@@ -1,13 +1,13 @@
 package com.rohit.flappybird.util;
 
+import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL20.*;
-import static org.lwjgl.opengl.GL11.GL_FALSE;
 
 public class ShaderUtils {
-
-	private ShaderUtils() {
-	}
 	
+	private ShaderUtils() {
+		
+	}
 	public static int load(String vertPath,String fragPath) {
 		String vert = FileUtility.loadAsString(vertPath);
 		String frag = FileUtility.loadAsString(fragPath);
@@ -42,7 +42,9 @@ public class ShaderUtils {
 		
 		glLinkProgram(program);
 		glValidateProgram(program);
+		
 		return program;
 		
 	}
+
 }

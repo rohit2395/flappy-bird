@@ -3,22 +3,17 @@
  */
 package com.rohit.flappybird;
 
-import static com.rohit.flappybird.Constants.HEIGHT;
-import static com.rohit.flappybird.Constants.WIDTH;
-import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
-import static org.lwjgl.opengl.GL11.GL_VERSION;
-import static org.lwjgl.opengl.GL11.glClear;
-import static org.lwjgl.opengl.GL11.glClearColor;
-import static org.lwjgl.opengl.GL11.glGetString;
+import static com.rohit.flappybird.util.RGBToOpenGLColorCode.*;
+import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.opengl.GL11.*;
 
-import org.lwjgl.LWJGLException;
-import org.lwjgl.opengl.ContextAttribs;
-import org.lwjgl.opengl.Display;
-import org.lwjgl.opengl.DisplayMode;
-import org.lwjgl.opengl.PixelFormat;
+import org.lwjgl.glfw.GLFWVidMode;
+import org.lwjgl.opengl.GL;
 
-import com.rohit.flappybird.util.FileUtility;
-import com.rohit.flappybird.util.ShaderUtils;
+import com.rohit.flappybird.graphics.Shader;
+import com.rohit.flappybird.input.Input;
+import com.rohit.flappybird.level.Level;
+import com.rohit.flappybird.math.Matrix4f;
 
 /**
  * @author rajbar
@@ -26,56 +21,79 @@ import com.rohit.flappybird.util.ShaderUtils;
  */
 public class Game implements Runnable {
 
-	private int width = WIDTH;
-	private int height = HEIGHT;
-	private String title = "Flappy Bird";
-
 	private boolean running = false;
 	private Thread thread;
 
+	private long window;
 	
-	private void init() {
-		String version = glGetString(GL_VERSION);
-		System.out.println("OpenGL version: "+version);
-		
-		glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-	}
-	
-	private void update() {
-		
-	}
-	
-	private void render() {
-		glClear(GL_COLOR_BUFFER_BIT);
-	}
-	
+	private Level level;
+
 	@Override
 	public void run() {
-		try {
-			Display.setDisplayMode(new DisplayMode(width, height));
-			Display.setTitle(title);
-			ContextAttribs context = new ContextAttribs(3, 3);
-			Display.create(new PixelFormat(), context.withProfileCore(true));
-		} catch (LWJGLException e) {
-			e.printStackTrace();
-		}
-		
-//		int shader = ShaderUtils.load("shaders/shader.vert","shaders/shader.frag");
-		
+		System.out.println("Game started...");
 		init();
-
 		while (running) {
-			Display.update();
+			update();
 			render();
-			if (Display.isCloseRequested())
+
+			if (glfwWindowShouldClose(window)) {
 				running = false;
+			}
 		}
-		Display.destroy();
+	}
+
+	private void init() {
+		if (!glfwInit()) {
+			// TODO: handle it
+		}
+
+		glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
+		window = glfwCreateWindow(Constants.WIDTH, Constants.HEIGHT, Constants.GAME_TITLE, 0l, 0l);
+		if (window == 0) {
+			//handle it
+			return;
+		}
+		GLFWVidMode vidMode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+		glfwSetWindowPos(window, (vidMode.width() - Constants.WIDTH) / 2, (vidMode.height() - Constants.HEIGHT) / 2);
+		glfwSetKeyCallback(window, new Input());
+		glfwMakeContextCurrent(window);
+		glfwShowWindow(window);
+
+		GL.createCapabilities();
+
+		glClearColor(getOpenGLValue(34), getOpenGLValue(158), getOpenGLValue(67), 1.0f);
+		glEnable(GL_DEPTH_TEST);
+		System.out.println("OpenGL Version :" + glGetString(GL_VERSION));
+		Shader.loadAll();
+
+		Shader.BG.enable();
+		Matrix4f pr_matrix = Matrix4f.orthographic(-10.0f, 10.0f, -10.0f * 9.0f / 16.0f, 10.0f * 9.0f / 16.0f, -1.0f, 1.0f);
+		Shader.BG.setUniformMat4f("pr_matrix", pr_matrix);
+		Shader.BG.disable();
+		level = new Level();
+		
+		int i = glGetError();
+		if(i  != GL_NO_ERROR) {
+			System.out.println(i);
+		}
+	}
+
+	private void update() {
+		glfwPollEvents();
+		if (Input.keys[GLFW_KEY_SPACE]) {
+			System.out.println("FLAP!");
+		}
+	}
+
+	private void render() {
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		level.render();
+		glfwSwapBuffers(window);
 	}
 
 	public void start() {
 		running = true;
-		thread = new Thread(this, "Display");
+		thread = new Thread(this, "Game");
 		thread.start();
 	}
 

@@ -3,10 +3,12 @@
  */
 package com.rohit.flappybird.math;
 
-import static com.rohit.flappybird.Constants.MAT_ROW_COL;
-import static java.lang.Math.cos;
-import static java.lang.Math.sin;
-import static java.lang.Math.toRadians;
+import static com.rohit.flappybird.Constants.*;
+import static java.lang.Math.*;
+
+import java.nio.FloatBuffer;
+
+import com.rohit.flappybird.util.BufferUtils;
 
 /**
  * @author rajbar
@@ -25,9 +27,9 @@ public class Matrix4f {
 		
 		result.getMatrix()[2 + 2 * MAT_ROW_COL] = 2.0f / (near - far);
 
-		result.getMatrix()[0 + 3 * MAT_ROW_COL] = (right + left) / (left - right);
-		result.getMatrix()[1 + 3 * MAT_ROW_COL] = (top + bottom) / (top - bottom);
-		result.getMatrix()[2 + 3 * MAT_ROW_COL] = (far + near) / (near - far);
+		result.getMatrix()[0 + 3 * MAT_ROW_COL] = (left + right) / (left - right);
+		result.getMatrix()[1 + 3 * MAT_ROW_COL] = (top + bottom) / (bottom - top);
+		result.getMatrix()[2 + 3 * MAT_ROW_COL] = (near + far) / (near - far);
 
 		return result;
 	}
@@ -94,5 +96,10 @@ public class Matrix4f {
 	public void setMatrix(float[] matrix) {
 		this.matrix = matrix;
 	}
+	
+	public FloatBuffer toFloatBuffer() {
+		return BufferUtils.createFloatBuffer(matrix);
+	}
+	
 
 }

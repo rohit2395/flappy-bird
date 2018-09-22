@@ -21,7 +21,7 @@ public class FileUtility {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return result;
+		return result.toString();
 	}
 
 }
