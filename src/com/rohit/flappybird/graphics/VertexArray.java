@@ -21,7 +21,6 @@ public class VertexArray {
 		vbo = glGenBuffers();
 		glBindBuffer(GL_ARRAY_BUFFER, vbo);
 		glBufferData(GL_ARRAY_BUFFER, BufferUtils.createFloatBuffer(vertices), GL_STATIC_DRAW);
-		System.out.println(BufferUtils.createFloatBuffer(vertices).capacity());
 		glVertexAttribPointer(Shader.VERTEX_ATTRIB, 3, GL_FLOAT, false, 0, 0);
 		glEnableVertexAttribArray(Shader.VERTEX_ATTRIB);
 

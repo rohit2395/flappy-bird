@@ -66,7 +66,7 @@ public class Matrix4f {
 			for (int x = 0; x < MAT_ROW_COL; x++) {
 				float sum = 0.0f;
 				for (int z = 0; z < MAT_ROW_COL; z++) {
-					sum += this.getMatrix()[z + x * MAT_ROW_COL] * mat.getMatrix()[z + y * MAT_ROW_COL];
+					sum += this.getMatrix()[x + z * MAT_ROW_COL] * mat.getMatrix()[z + y * MAT_ROW_COL];
 				}
 				result.getMatrix()[x + y * MAT_ROW_COL] = sum;
 			}

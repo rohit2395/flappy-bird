@@ -28,20 +28,7 @@ public class Game implements Runnable {
 	private long window;
 	
 	private Level level;
-	@Override
-	public void run() {
-		System.out.println("Game started...");
-		init();
-		while (running) {
-			update();
-			render();
-
-			if (glfwWindowShouldClose(window)) {
-				running = false;
-			}
-		}
-	}
-
+	
 	private void init() {
 		if (!glfwInit()) {
 			// TODO: handle it
@@ -67,9 +54,12 @@ public class Game implements Runnable {
 		System.out.println("OpenGL Version :" + glGetString(GL_VERSION));
 		Shader.loadAll();
 
-		Matrix4f pr_matrix = Matrix4f.orthographic(-10.0f,  10.0f, -10.0f ,  10.0f  ,-1.0f, 1.0f);
+		Matrix4f pr_matrix = Matrix4f.orthographic(-10.0f, 10.0f, -10.0f * Constants.ASPECT_RATIO, 10.0f * Constants.ASPECT_RATIO ,-1.0f, 1.0f);
 		Shader.BG.setUniformMat4f("pr_matrix", pr_matrix);
 		Shader.BG.setUniform1i("tex",1);
+		
+		Shader.BIRD.setUniformMat4f("pr_matrix", pr_matrix);
+		Shader.BIRD.setUniform1i("tex",1);
 		
 		level = new Level();
 		
@@ -78,12 +68,11 @@ public class Game implements Runnable {
 			System.out.println(error);
 		}
 	}
+	
 
 	private void update() {
 		glfwPollEvents();
-		if (Input.keys[GLFW_KEY_SPACE]) {
-			System.out.println("FLAP!");
-		}
+		level.update();
 	}
 
 	private void render() {
@@ -91,6 +80,46 @@ public class Game implements Runnable {
 		level.render();
 		glfwSwapBuffers(window);
 	}
+	
+	@Override
+	public void run() {
+		System.out.println("Game started...");
+		init();
+		long lastTime = System.nanoTime();
+		double delta = 0.0;
+		double ns = 1000000000.0 / 60.0;
+		long timer = System.currentTimeMillis();
+		int updates = 0;
+		int frames = 0;
+		while (running) {
+			long now = System.nanoTime();
+			delta += (now - lastTime) / ns;
+			lastTime = now;
+			if(delta >= 1.0) {
+				update();
+				updates++;
+				delta--;
+				render();
+				frames++;
+			}
+			if(System.currentTimeMillis() - timer > 1000) {
+				timer += 1000;
+				try {
+					String title = Constants.GAME_TITLE + "[ups:"+updates+"|fps:"+frames+"]";
+//					glfwSetWindowTitle(now, title);
+				}catch(Exception e) {
+					
+				}
+				System.err.println("[ups:"+updates+"|fps:"+frames+"]");
+				updates = 0;
+				frames = 0;
+			}
+			if (glfwWindowShouldClose(window)) {
+				running = false;
+			}
+		}
+	}
+
 
 	public void start() {
 		running = true;
