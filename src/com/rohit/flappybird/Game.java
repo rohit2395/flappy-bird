@@ -36,6 +36,7 @@ public class Game implements Runnable {
 
 		glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
 		window = glfwCreateWindow(Constants.WIDTH, Constants.HEIGHT, Constants.GAME_TITLE, 0l, 0l);
+		
 		if (window == 0) {
 			//handle it
 			return;
@@ -67,6 +68,7 @@ public class Game implements Runnable {
 		if(error  != GL_NO_ERROR) {
 			System.out.println(error);
 		}
+		
 	}
 	
 
@@ -91,6 +93,7 @@ public class Game implements Runnable {
 		long timer = System.currentTimeMillis();
 		int updates = 0;
 		int frames = 0;
+		int i=0;
 		while (running) {
 			long now = System.nanoTime();
 			delta += (now - lastTime) / ns;
@@ -99,18 +102,17 @@ public class Game implements Runnable {
 				update();
 				updates++;
 				delta--;
-				render();
-				frames++;
 			}
+			render();
+			frames++;
 			if(System.currentTimeMillis() - timer > 1000) {
 				timer += 1000;
 				try {
-					String title = Constants.GAME_TITLE + "[ups:"+updates+"|fps:"+frames+"]";
-//					glfwSetWindowTitle(now, title);
+					String title = Constants.GAME_TITLE + " [ UPS : "+updates+" | FPS : "+frames+" ]";
+					glfwSetWindowTitle(window,title);
 				}catch(Exception e) {
 					
 				}
-				System.err.println("[ups:"+updates+"|fps:"+frames+"]");
 				updates = 0;
 				frames = 0;
 			}
