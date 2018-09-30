@@ -8,6 +8,13 @@ import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL13.*;
 
+import java.awt.image.BufferedImage;
+import java.io.FileInputStream;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
+
+import org.lwjgl.glfw.GLFWImage;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 
@@ -15,6 +22,8 @@ import com.rohit.flappybird.graphics.Shader;
 import com.rohit.flappybird.input.Input;
 import com.rohit.flappybird.level.Level;
 import com.rohit.flappybird.math.Matrix4f;
+import com.rohit.flappybird.util.BufferUtils;
+import com.rohit.flappybird.util.FileUtility;
 
 /**
  * @author rajbar
@@ -35,14 +44,14 @@ public class Game implements Runnable {
 		}
 
 		glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
-		window = glfwCreateWindow(Constants.WIDTH, Constants.HEIGHT, Constants.GAME_TITLE, 0l, 0l);
+		window = glfwCreateWindow(Constants.WIDTH , Constants.HEIGHT, Constants.GAME_TITLE, 0l, 0l);
 		
 		if (window == 0) {
 			//handle it
 			return;
 		}
 		GLFWVidMode vidMode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-		glfwSetWindowPos(window, (vidMode.width() - Constants.WIDTH) / 2, (vidMode.height() - Constants.HEIGHT) / 2);
+		glfwSetWindowPos(window, (vidMode.width() - Constants.WIDTH) / 2 - 100, (vidMode.height() - Constants.HEIGHT) / 2);
 		glfwSetKeyCallback(window, new Input());
 		glfwMakeContextCurrent(window);
 		glfwShowWindow(window);
@@ -56,11 +65,15 @@ public class Game implements Runnable {
 		Shader.loadAll();
 
 		Matrix4f pr_matrix = Matrix4f.orthographic(-10.0f, 10.0f, -10.0f * Constants.ASPECT_RATIO, 10.0f * Constants.ASPECT_RATIO ,-1.0f, 1.0f);
+		
 		Shader.BG.setUniformMat4f("pr_matrix", pr_matrix);
 		Shader.BG.setUniform1i("tex",1);
 		
 		Shader.BIRD.setUniformMat4f("pr_matrix", pr_matrix);
 		Shader.BIRD.setUniform1i("tex",1);
+		
+		Shader.PIPE.setUniformMat4f("pr_matrix", pr_matrix);
+		Shader.PIPE.setUniform1i("tex",1);
 		
 		level = new Level();
 		
@@ -120,6 +133,9 @@ public class Game implements Runnable {
 				running = false;
 			}
 		}
+		
+		glfwDestroyWindow(window);
+		glfwTerminate();
 	}
 
 

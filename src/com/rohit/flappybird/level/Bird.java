@@ -14,9 +14,6 @@ public class Bird {
 	
 	private float SIZE = 1.0f;
 	
-//	private float locationOffsetX = 0.0f;
-//	private float locationOffsetY = 0.0f;
-	
 	float rot;
 	float delta;
 	float angle;
@@ -28,10 +25,6 @@ public class Bird {
 	public Bird() {
 		
 		float[] vertices = new float[] {
-//			-(SIZE  / 2.0f) + this.locationOffsetX,-(SIZE / 2.0f) + this.locationOffsetY, 0.2f,
-//			-(SIZE  / 2.0f) + this.locationOffsetX,(SIZE / 2.0f) + this.locationOffsetY, 0.2f,
-//			(SIZE  / 2.0f) +  this.locationOffsetX,  (SIZE / 2.0f)+ this.locationOffsetY, 0.2f,
-//			(SIZE  / 2.0f) +  this.locationOffsetX, -(SIZE / 2.0f) + this.locationOffsetY, 0.2f
 				-(SIZE  / 2.0f) ,-(SIZE / 2.0f) ,0.1f,
 				-(SIZE  / 2.0f) ,(SIZE / 2.0f) , 0.1f,
 				(SIZE  / 2.0f) ,  (SIZE / 2.0f), 0.1f,
@@ -63,7 +56,7 @@ public class Bird {
 	public void update() {
 		position.y -= delta;
 		if(Input.isKeyDown(GLFW_KEY_SPACE)) {
-			delta = -0.20f;
+			delta = -0.13f;
 			angle = -0.5f;
 		}
 		else {
@@ -76,7 +69,6 @@ public class Bird {
 	
 	public void render() {
 		Shader.BIRD.enable();
-//		Shader.BIRD.setUniformMat4f("ml_matrix", Matrix4f.translate(position).multiply(Matrix4f.translate(new Vector3f(this.locationOffsetX,this.locationOffsetY,0.2f)).multiply(Matrix4f.rotate(rot).multiply(Matrix4f.translate((new Vector3f(-this.locationOffsetX,-this.locationOffsetY,0.2f)))))));
 		Shader.BIRD.setUniformMat4f("ml_matrix", Matrix4f.translate(position).multiply(Matrix4f.rotate(rot)));
 
 		texture.bind();
@@ -90,6 +82,10 @@ public class Bird {
 
 	public float getY() {
 		return position.y;
+	}
+	
+	public float getX() {
+		return position.x;
 	}
 
 	public float getSize() {

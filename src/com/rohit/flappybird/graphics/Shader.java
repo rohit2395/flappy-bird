@@ -16,6 +16,8 @@ public class Shader {
 	
 	public static Shader BG;
 	public static Shader BIRD;
+	public static Shader PIPE;
+	
 	
 	private boolean enabled = false;
 	private final int ID;
@@ -28,6 +30,7 @@ public class Shader {
 	public static void loadAll() {
 		BG = new Shader("shaders/bg.vert","shaders/bg.frag");
 		BIRD = new Shader("shaders/bird.vert","shaders/bird.frag");
+		PIPE = new Shader("shaders/pipe.vert","shaders/pipe.frag");
 	}
 	
 	public int getUniform(String name) {
@@ -36,7 +39,7 @@ public class Shader {
 		}
 		int result = glGetUniformLocation(ID, name);
 		if(result == -1) {
-			System.err.println("Could not find the uniform variable 1"+name+"'!");
+			System.err.println("Could not find the uniform variable '"+name+"'!");
 		}else {
 			locationCache.put(name,result);
 		}
